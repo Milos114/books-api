@@ -139,6 +139,7 @@ class BooksControllerTest extends TestCase
     {
         $this->delete('books/11111111')
 
+
             ->seeStatusCode(404)
             ->seeJsonEquals([
                 'error' => [
