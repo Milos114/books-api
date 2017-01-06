@@ -18,15 +18,17 @@ class BooksControllerTest extends TestCase
     /** @test * */
     public function show_should_return_a_valid_book()
     {
-        $this->get('books/1')
+        $book = factory(Book::class)->create();
+
+        $this->get("books/$book->id")
             ->seeStatusCode(200)
             ->seeJson([
-                'title' => 'Illum possimus occaecati repellendus possimus.',
-                'synopsis' => 'Quis quisquam in dicta error. Sint dolor eos vitae dolorem consequatur ut cupiditate qui. Architecto aperiam incidunt et.',
-                'author' => 'Hilario Crona'
+                'title' => $book->title,
+                'synopsis' => $book->description,
+                'author' => $book->author
             ]);
-
         $data = json_decode($this->response->getContent(), true);
+
         $this->assertArrayHasKey('created_at', $data);
         $this->assertArrayHasKey('updated_at', $data);
     }
@@ -82,24 +84,22 @@ class BooksControllerTest extends TestCase
         ])->seeJson([
             'created' => true
         ])->seeStatusCode(201)
-            ->seeHeader('location', 'http://'  . env('APP_DOMAIN') . "/books/$book->id");
+            ->seeHeader('location', 'http://' . env('APP_DOMAIN') . "/books/$book->id");
     }
 
     /** @test * */
     public function update_should_only_change_fillable_fields()
     {
-        $this->notSeeInDatabase('books', [
-            'title' => 'War of the worlds'
-        ]);
+        $book = Book::first();
 
-        $this->put('books/1', [
-            'title' => 'The War of the worlds',
-            'description' => 'The book is better then the movie',
+        $this->put("books/$book->id", [
+            'title' => $book->title,
+            'description' => $book->description,
         ]);
 
         $this->seeInDatabase('books', [
-            'title' => 'The War of the worlds',
-            'description' => 'The book is better then the movie',
+            'title' => $book->title,
+            'description' => $book->description,
         ])->seeJson([
             'updated' => true
         ])->seeStatusCode(200);
@@ -125,8 +125,10 @@ class BooksControllerTest extends TestCase
     /** @test * */
     public function destroy_should_remove_a_valid_book()
     {
-        $this->delete('/books/1')->notSeeInDatabase('books', [
-            'id' => 1
+        $book = factory(Book::class)->create();
+
+        $this->delete("/books/$book->id")->notSeeInDatabase('books', [
+            'id' => $book->id
         ])->seeStatusCode(204)->seeJson([
             'deleted' => true
         ]);
