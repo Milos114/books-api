@@ -3,26 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Book;
+use App\Transformers\BooksTransformer;
 use Illuminate\Http\Request;
 
 class BooksController extends Controller
 {
+    protected $transformer;
+
+    /**
+     * @param BooksTransformer $transformer
+     */
+    public function __construct(BooksTransformer $transformer)
+    {
+        $this->transformer = $transformer;
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
     public function index()
     {
-        return Book::all();
+        return $this->transformer->transformCollection(Book::all());
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param  $id
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
         try {
-            return Book::findOrFail($id);
+            return $this->transformer->transform(Book::findOrFail($id));
         } catch (\Exception $e) {
             return response()->json([
                 'error' => [

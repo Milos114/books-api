@@ -22,7 +22,7 @@ class BooksControllerTest extends TestCase
             ->seeStatusCode(200)
             ->seeJson([
                 'title' => 'Illum possimus occaecati repellendus possimus.',
-                'description' => 'Quis quisquam in dicta error. Sint dolor eos vitae dolorem consequatur ut cupiditate qui. Architecto aperiam incidunt et.',
+                'synopsis' => 'Quis quisquam in dicta error. Sint dolor eos vitae dolorem consequatur ut cupiditate qui. Architecto aperiam incidunt et.',
                 'author' => 'Hilario Crona'
             ]);
 
