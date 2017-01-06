@@ -138,8 +138,6 @@ class BooksControllerTest extends TestCase
     public function destroy_should_return_a_404_with_an_invalid_id()
     {
         $this->delete('books/11111111')
-
-
             ->seeStatusCode(404)
             ->seeJsonEquals([
                 'error' => [
