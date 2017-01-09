@@ -1,11 +1,12 @@
 <?php
 
 use App\Book;
+use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class BooksControllerTest extends TestCase
 {
-    use DatabaseTransactions;
+    use DatabaseTransactions, DatabaseMigrations;
 
     /** @test */
     public function index_status_code_should_be_200()
@@ -29,8 +30,8 @@ class BooksControllerTest extends TestCase
             ]);
         $data = json_decode($this->response->getContent(), true);
 
-        $this->assertArrayHasKey('created_at', $data);
-        $this->assertArrayHasKey('updated_at', $data);
+        $this->assertArrayHasKey('created_at', $data['data']);
+        $this->assertArrayHasKey('updated_at', $data['data']);
     }
 
     /** @test * */
@@ -90,7 +91,10 @@ class BooksControllerTest extends TestCase
     /** @test * */
     public function update_should_only_change_fillable_fields()
     {
-        $book = Book::first();
+        $book = factory(Book::class)->create([
+            'title' => 'Some title',
+            'description' => 'Some description',
+        ]);
 
         $this->put("books/$book->id", [
             'title' => $book->title,
@@ -98,8 +102,8 @@ class BooksControllerTest extends TestCase
         ]);
 
         $this->seeInDatabase('books', [
-            'title' => $book->title,
-            'description' => $book->description,
+            'title' => 'Some title',
+            'description' => 'Some description',
         ])->seeJson([
             'updated' => true
         ])->seeStatusCode(200);
