@@ -91,19 +91,18 @@ class BooksControllerTest extends TestCase
     /** @test * */
     public function update_should_only_change_fillable_fields()
     {
-        $book = factory(Book::class)->create([
-            'title' => 'Some title',
-            'description' => 'Some description',
-        ]);
+        $book = factory(Book::class)->create();
 
         $this->put("books/$book->id", [
-            'title' => $book->title,
-            'description' => $book->description,
+            'title' => 'Changed title',
+            'description' => 'Changed description',
+            'author' => 'Changed author',
         ]);
 
         $this->seeInDatabase('books', [
-            'title' => 'Some title',
-            'description' => 'Some description',
+            'title' => 'Changed title',
+            'description' => 'Changed description',
+            'author' => 'Changed author',
         ])->seeJson([
             'updated' => true
         ])->seeStatusCode(200);
