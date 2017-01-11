@@ -6,14 +6,19 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class BooksControllerTest extends TestCase
 {
-    use DatabaseTransactions, DatabaseMigrations;
+    use DatabaseMigrations, DatabaseTransactions;
 
     /** @test */
     public function index_status_code_should_be_200()
     {
-        $response = $this->call('GET', '/books');
+        factory(Book::class, 2)->create();
 
-        $this->assertEquals(200, $response->status());
+        $this->get('/books');
+        $data = json_decode($this->response->getContent(), true);
+
+        $this->assertEquals($this->response->getStatusCode(), 200);
+        $this->seeJson(['message' => 'Success']);
+        $this->assertArrayHasKey('data', $data);
     }
 
     /** @test * */
@@ -26,12 +31,12 @@ class BooksControllerTest extends TestCase
             ->seeJson([
                 'title' => $book->title,
                 'synopsis' => $book->description,
-                'author' => $book->author
+//                'author' => $book->author->name
             ]);
         $data = json_decode($this->response->getContent(), true);
 
-        $this->assertArrayHasKey('created_at', $data['data']);
-        $this->assertArrayHasKey('updated_at', $data['data']);
+        $this->assertArrayHasKey('created_at', $data);
+        $this->assertArrayHasKey('updated_at', $data);
     }
 
     /** @test * */
@@ -71,20 +76,20 @@ class BooksControllerTest extends TestCase
     /** @test * */
     public function store_should_save_new_book_in_the_database()
     {
+        $book = factory(Book::class)->make(['id' => 1]);
+
         $this->post('/books', [
-            'title' => 'title for create',
-            'description' => 'description for create',
-            'author' => 'author for create',
+            'title' => $book->title,
+            'description' => $book->description,
+            'author_id' => $book->author->id,
         ]);
-        $book = Book::latest()->first();
 
         $this->seeInDatabase('books', [
-            'title' => 'title for create',
-            'description' => 'description for create',
-            'author' => 'author for create'
-        ])->seeJson([
-            'created' => true
-        ])->seeStatusCode(201)
+            'title' => $book->title,
+            'description' => $book->description,
+            'author_id' => $book->author->id,
+        ])->seeJson(['created' => true])
+            ->seeStatusCode(201)
             ->seeHeader('location', 'http://' . env('APP_DOMAIN') . "/books/$book->id");
     }
 
@@ -96,13 +101,13 @@ class BooksControllerTest extends TestCase
         $this->put("books/$book->id", [
             'title' => 'Changed title',
             'description' => 'Changed description',
-            'author' => 'Changed author',
+            'author_id' => $book->author->id,
         ]);
 
         $this->seeInDatabase('books', [
             'title' => 'Changed title',
             'description' => 'Changed description',
-            'author' => 'Changed author',
+            'author_id' => $book->author->id,
         ])->seeJson([
             'updated' => true
         ])->seeStatusCode(200);

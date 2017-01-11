@@ -23,7 +23,12 @@ class BooksController extends Controller
      */
     public function index()
     {
-        return $this->transformer->transformCollection(Book::all());
+        return response()->json([
+            'data' => $this->transformer->transformCollection(Book::all()->toArray()),
+            'status' => [
+                'message' => 'Success'
+            ]
+        ], 200);
     }
 
     /**
@@ -52,7 +57,7 @@ class BooksController extends Controller
         $this->validate($request, [
             'title' => 'required|max:255',
             'description' => 'required',
-            'author' => 'required'
+            'author_id' => 'required'
         ], [
             'description.required' => 'Please fill out the description.'
         ]);
@@ -86,7 +91,7 @@ class BooksController extends Controller
         $this->validate($request, [
             'title' => 'required',
             'description' => 'required',
-            'author' => 'required',
+            'author_id' => 'required',
         ], [
             'description.required' => 'Please fill out the description.'
         ]);

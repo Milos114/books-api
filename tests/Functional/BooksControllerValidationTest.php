@@ -18,11 +18,9 @@ class BooksControllerValidationTest extends TestCase
 
         $this->assertArrayHasKey('title', $body);
         $this->assertArrayHasKey('description', $body);
-        $this->assertArrayHasKey('author', $body);
 
         $this->assertEquals(["The title field is required."], $body['title']);
         $this->assertEquals(["Please fill out the description."], $body['description']);
-        $this->assertEquals(["The author field is required."], $body['author']);
 
     }
 
@@ -36,11 +34,9 @@ class BooksControllerValidationTest extends TestCase
 
         $this->assertArrayHasKey('title', $body);
         $this->assertArrayHasKey('description', $body);
-        $this->assertArrayHasKey('author', $body);
 
         $this->assertEquals(["The title field is required."], $body['title']);
         $this->assertEquals(["Please fill out the description."], $body['description']);
-        $this->assertEquals(["The author field is required."], $body['author']);
     }
 
     /** @test * */
@@ -49,13 +45,11 @@ class BooksControllerValidationTest extends TestCase
         $book = factory(Book::class)->make([
             'title' => str_repeat('a', 256),
             'description' => 'some description',
-            'author' => 'some author'
         ]);
 
         $this->post("/books/", [
             'title' => $book->title,
             'description' => $book->description,
-            'author' => $book->author,
         ], ['Accept' => 'application/json']);
 
         $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->response->getStatusCode());
@@ -69,15 +63,15 @@ class BooksControllerValidationTest extends TestCase
     public function title_passes_create_validation_when_exactly_max()
     {
         $book = factory(Book::class)->make([
+            'id' => 1,
             'title' => str_repeat('a', 255),
             'description' => 'some description',
-            'author' => 'some author'
         ]);
 
         $this->post("/books/", [
             'title' => $book->title,
             'description' => $book->description,
-            'author' => $book->author,
+            'author_id' => $book->author->id
         ], ['Accept' => 'application/json']);
 
         $this->seeStatusCode(Response::HTTP_CREATED)
@@ -95,7 +89,7 @@ class BooksControllerValidationTest extends TestCase
         $this->put("/books/$book->id", [
             'title' => $book->title,
             'description' => 'Some description',
-            'author' => 'Some author',
+            'author_id' => $book->author->id
         ], ['Accept' => 'application/json']);
 
         $this->seeStatusCode(Response::HTTP_OK)

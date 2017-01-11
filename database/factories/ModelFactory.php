@@ -11,6 +11,7 @@
 |
 */
 
+
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
@@ -20,8 +21,18 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Book::class, function (Faker\Generator $faker) {
     return [
+        'author_id' => factory(App\Author::class)->create()->id,
         'title' => $faker->sentence,
         'description' => $faker->text,
-        'author' => $faker->name,
     ];
 });
+
+$factory->define(App\Author::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'gender' => rand(1, 6) % 2 == 0 ? 'male' : 'female',
+        'biography' => $faker->text(),
+    ];
+});
+
+

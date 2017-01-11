@@ -10,11 +10,11 @@ abstract class Transformer
      * @param $items
      * @return mixed
      */
-    public function transformCollection($items)
+    public function transformCollection(array $items)
     {
-        return $items->map(function ($item) {
+        return array_map(function ($item) {
             return $this->transform($item);
-        });
+        }, $items);
     }
 
     /**
