@@ -80,6 +80,28 @@ class BooksControllerValidationTest extends TestCase
     }
 
     /** @test * */
+    public function title_fail_create_validation_when_author_id_is_not_int()
+    {
+        $book = factory(Book::class)->make([
+            'id' => 1,
+            'title' => 'title',
+            'description' => 'some description',
+        ]);
+
+        $this->post("/books/", [
+            'title' => $book->title,
+            'description' => $book->description,
+            'author_id' => 'string'
+        ], ['Accept' => 'application/json']);
+
+        $body = json_decode($this->response->getContent(), true);
+
+        $this->seeStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->notSeeInDatabase('books', ['title' => $book->title])
+            ->assertEquals(["The author id must be an integer."], $body['author_id']);
+    }
+
+    /** @test * */
     public function title_passes_update_validation_when_exactly_max()
     {
         $book = factory(Book::class)->create([
@@ -95,5 +117,23 @@ class BooksControllerValidationTest extends TestCase
         $this->seeStatusCode(Response::HTTP_OK)
             ->seeJson(['updated' => true])
             ->seeInDatabase('books', ['title' => $book->title]);
+    }
+
+    /** @test * */
+    public function it_fails_update_validation_when_author_id_is_not_int()
+    {
+        $book = factory(Book::class)->create();
+
+        $this->put("/books/$book->id", [
+            'title' => 'title',
+            'description' => 'description',
+            'author_id' => 'string'
+        ], ['Accept' => 'application/json']);
+
+        $body = json_decode($this->response->getContent(), true);
+
+        $this->seeStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->notSeeInDatabase('books', ['title' => 'title', 'description' => 'description'])
+            ->assertEquals(["The author id must be an integer."], $body['author_id']);
     }
 }

@@ -57,7 +57,7 @@ class BooksController extends Controller
         $this->validate($request, [
             'title' => 'required|max:255',
             'description' => 'required',
-            'author_id' => 'required'
+            'author_id' => 'required|integer'
         ], [
             'description.required' => 'Please fill out the description.'
         ]);
@@ -91,7 +91,7 @@ class BooksController extends Controller
         $this->validate($request, [
             'title' => 'required',
             'description' => 'required',
-            'author_id' => 'required',
+            'author_id' => 'required|integer',
         ], [
             'description.required' => 'Please fill out the description.'
         ]);
