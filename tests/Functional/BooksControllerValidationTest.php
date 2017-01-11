@@ -3,7 +3,6 @@
 use App\Book;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class BooksControllerValidationTest extends TestCase
 {
@@ -13,28 +12,26 @@ class BooksControllerValidationTest extends TestCase
     public function it_validates_required_fields_when_creating_a_new_book()
     {
         $this->post('/books', [], ['Accept' => 'application/json']);
-        $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->response->getStatusCode());
         $body = json_decode($this->response->getContent(), true);
 
+        $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->response->getStatusCode());
         $this->assertArrayHasKey('title', $body);
         $this->assertArrayHasKey('description', $body);
-
         $this->assertEquals(["The title field is required."], $body['title']);
         $this->assertEquals(["Please fill out the description."], $body['description']);
-
     }
 
     /** @test * */
     public function it_validates_requied_fields_when_updating_a_book()
     {
         $book = factory(Book::class)->create();
+
         $this->put("/books/$book->id", [], ['Accept' => 'application/json']);
-        $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->response->getStatusCode());
         $body = json_decode($this->response->getContent(), true);
 
+        $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->response->getStatusCode());
         $this->assertArrayHasKey('title', $body);
         $this->assertArrayHasKey('description', $body);
-
         $this->assertEquals(["The title field is required."], $body['title']);
         $this->assertEquals(["Please fill out the description."], $body['description']);
     }
@@ -51,11 +48,10 @@ class BooksControllerValidationTest extends TestCase
             'title' => $book->title,
             'description' => $book->description,
         ], ['Accept' => 'application/json']);
+        $body = json_decode($this->response->getContent(), true);
 
         $this->assertEquals(Response::HTTP_UNPROCESSABLE_ENTITY, $this->response->getStatusCode());
         $this->notSeeInDatabase('books', ['id' => $book->id]);
-
-        $body = json_decode($this->response->getContent(), true);
         $this->assertEquals(["The title may not be greater than 255 characters."], $body['title']);
     }
 
