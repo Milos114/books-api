@@ -25,3 +25,7 @@ $app->post('/books', 'BooksController@store');
 $app->get('/books/{id}', ['as' => 'books.show', 'uses' =>'BooksController@show']);
 $app->put('/books/{id}', 'BooksController@update');
 $app->delete('/books/{id}', 'BooksController@delete');
+
+$app->get('/authors', 'AuthorsController@index');
+$app->get('/authors/{id}', 'AuthorsController@show');
+
