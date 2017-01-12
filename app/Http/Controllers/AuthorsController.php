@@ -38,7 +38,7 @@ class AuthorsController extends Controller
 //        dd($this->transformer->transform(Author::findOrFail($id)));
         try {
             return response()->json([
-                'data' => $this->transformer->transform(Author::findOrFail($id)),
+                'data' => $this->transformer->transform(Author::findOrFail($id)->toArray()),
                 'status' => 'Success'
             ]);
         } catch (\Exception $e) {

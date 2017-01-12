@@ -12,8 +12,8 @@ class AuthorsTransformer extends Transformer
             'name' => $author['name'],
             'gender' => $author['gender'],
             'biography' => $author['biography'],
-            'created_at' => $author['created_at']->toDateTimeString(),
-            'updated_at' => $author['updated_at']->toDateTimeString(),
+            'created_at' => $author['created_at'],
+            'updated_at' => $author['updated_at'],
         ];
     }
 }

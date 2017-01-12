@@ -23,14 +23,15 @@ class AuthorsControllerTest extends \TestCase
 
         $this->get('/authors');
         $body = json_decode($this->response->content(), true);
+//        dd($body['data']);
 
         foreach ($body['data'] as $author) {
             $this->seeJson([
                 'name' => $author['name'],
                 'gender' => $author['gender'],
                 'biography' => $author['biography'],
-                'created' => $author['created'],
-                'updated' => $author['updated']
+                'created_at' => $author['created_at'],
+                'updated_at' => $author['updated_at']
             ]);
         }
 
