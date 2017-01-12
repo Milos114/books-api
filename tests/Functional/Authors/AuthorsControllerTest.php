@@ -48,11 +48,14 @@ class AuthorsControllerTest extends \TestCase
         $this->get("/authors/$author->id");
 
         $this->seeJson([
-            'name' => $author->name,
-            'gender' => $author->gender,
-            'biography' => $author->biography,
-            'created_at' => $author->created_at->toDateTimeString(),
-            'updated_at' => $author->updated_at->toDateTimeString(),
+            'data' => [
+                'name' => $author->name,
+                'gender' => $author->gender,
+                'biography' => $author->biography,
+                'created_at' => $author->created_at->toDateTimeString(),
+                'updated_at' => $author->updated_at->toDateTimeString(),
+            ],
+            'status' => 'Success'
         ])->seeStatusCode(200);
     }
 }
