@@ -6,7 +6,7 @@ use App\Book;
 use App\Transformers\BooksTransformer;
 use Illuminate\Http\Request;
 
-class BooksController extends Controller
+class BooksController extends ApiController
 {
     protected $transformer;
 
@@ -40,11 +40,7 @@ class BooksController extends Controller
         try {
             return $this->transformer->transform(Book::findOrFail($id));
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => [
-                    'message' => 'Book not found'
-                ]
-            ], 404);
+            return $this->respondNotFound('Book not found');
         }
     }
 
@@ -81,11 +77,7 @@ class BooksController extends Controller
         try {
             $book = Book::findOrFail($id);
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => [
-                    'message' => 'This book does not exist'
-                ]
-            ], 404);
+            return $this->respondNotFound('This book does not exist');
         }
 
         $this->validate($request, [
@@ -112,11 +104,7 @@ class BooksController extends Controller
         try {
             Book::findOrFail($id)->delete();
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => [
-                    'message' => 'Book not found'
-                ]
-            ], 404);
+            return $this->respondNotFound('Book not found');
         }
 
         return response()->json([

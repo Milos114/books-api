@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Author;
 use App\Transformers\AuthorsTransformer;
 
-class AuthorsController extends Controller
+class AuthorsController extends ApiController
 {
     /**
      * @var AuthorsTransformer
@@ -35,18 +35,15 @@ class AuthorsController extends Controller
 
     public function show($id)
     {
-//        dd($this->transformer->transform(Author::findOrFail($id)));
         try {
             return response()->json([
                 'data' => $this->transformer->transform(Author::findOrFail($id)->toArray()),
-                'status' => 'Success'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => [
-                    'message' => 'Author not found'
+                'status' => [
+                    'message' => 'Success'
                 ]
-            ]);
+            ], 200);
+        } catch (\Exception $e) {
+            return $this->respondNotFound('Author not found');
         }
     }
 

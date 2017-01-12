@@ -46,7 +46,8 @@ class BooksControllerTest extends TestCase
             ->seeStatusCode(404)
             ->seeJson([
                 'error' => [
-                    'message' => 'Book not found'
+                    'message' => 'Book not found',
+                    'status_code' => 404
                 ]
             ]);
     }
@@ -58,7 +59,8 @@ class BooksControllerTest extends TestCase
             ->seeStatusCode(404)
             ->seeJson([
                 'error' => [
-                    'message' => 'Book not found'
+                    'message' => 'Book not found',
+                    'status_code' => 404
                 ]
             ]);
     }
@@ -68,7 +70,8 @@ class BooksControllerTest extends TestCase
     {
         $this->get('/books/invalid-route')->seeJsonEquals([
             'error' => [
-                'message' => 'Book not found'
+                'message' => 'Book not found',
+                'status_code' => 404
             ]
         ])->seeStatusCode(404);
     }
@@ -118,7 +121,8 @@ class BooksControllerTest extends TestCase
     {
         $this->put('books/111111111')->seeStatusCode(404)->seeJson([
             'error' => [
-                'message' => 'This book does not exist'
+                'message' => 'This book does not exist',
+                'status_code' => 404
             ]
         ]);
     }
@@ -149,7 +153,8 @@ class BooksControllerTest extends TestCase
             ->seeStatusCode(404)
             ->seeJsonEquals([
                 'error' => [
-                    'message' => 'Book not found'
+                    'message' => 'Book not found',
+                    'status_code' => 404
                 ]
             ]);
     }

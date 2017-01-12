@@ -23,7 +23,6 @@ class AuthorsControllerTest extends \TestCase
 
         $this->get('/authors');
         $body = json_decode($this->response->content(), true);
-//        dd($body['data']);
 
         foreach ($body['data'] as $author) {
             $this->seeJson([
@@ -55,7 +54,24 @@ class AuthorsControllerTest extends \TestCase
                 'created_at' => $author->created_at->toDateTimeString(),
                 'updated_at' => $author->updated_at->toDateTimeString(),
             ],
-            'status' => 'Success'
+            'status' => [
+                'message' => 'Success'
+            ]
         ])->seeStatusCode(200);
+    }
+
+    /** @test */
+    public function show_should_fail_on_an_invalid_author()
+    {
+        $author = factory(Author::class)->make(['id' => 254]);
+
+        $this->get("/authors/$author->id");
+
+        $this->seeJsonEquals([
+            'error' => [
+                'message' => 'Author not found',
+                'status_code' => Response::HTTP_NOT_FOUND
+            ]
+        ])->seeStatusCode(Response::HTTP_NOT_FOUND);
     }
 }
