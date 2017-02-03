@@ -19,6 +19,7 @@ class BooksControllerTest extends TestCase
         $this->assertEquals($this->response->getStatusCode(), 200);
         $this->seeJson(['message' => 'Success'])
             ->assertArrayHasKey('data', $data);
+        "trarararlala test";
     }
 
     /** @test * */
