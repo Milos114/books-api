@@ -15,17 +15,10 @@ class BooksControllerTest extends TestCase
 
         $this->get('/books');
         $data = json_decode($this->response->getContent(), true);
-"some master code";
 
-sdsad
-adsdasd
         $this->assertEquals($this->response->getStatusCode(), 200);
         $this->seeJson(['message' => 'Success'])
             ->assertArrayHasKey('data', $data);
-        "trarararlala test";
-        "trarararlala masta";
-        "trarararlala test";
-        "trarararlala test";
     }
 
     /** @test * */
