@@ -20,6 +20,8 @@ class BooksControllerTest extends TestCase
         $this->seeJson(['message' => 'Success'])
             ->assertArrayHasKey('data', $data);
         "trarararlala test";
+        "trarararlala test1";
+        "trarararlala test2";
     }
 
     /** @test * */
