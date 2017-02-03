@@ -23,6 +23,7 @@ adsdasd
         $this->seeJson(['message' => 'Success'])
             ->assertArrayHasKey('data', $data);
         "trarararlala test";
+        "trarararlala masta";
         "trarararlala test";
         "trarararlala test";
     }
